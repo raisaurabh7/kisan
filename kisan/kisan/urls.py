@@ -24,9 +24,9 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.generateInvoice),
+    path('', views.generateOrderTemplate, name="orderPage"),
     path('download/invoice/<int:id>/', views.GeneratePdf.as_view(), name="download"),
-    path('api/orders/', views.GetOrder.as_view())
+    path('api/orders/', views.GetOrder.as_view(), name="orderEndpoint")
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

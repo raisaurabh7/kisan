@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class SugestionsSerializer(serializers.Serializer):
+class OrdersSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     orderSeller__name = serializers.CharField()
     orderSeller__address = serializers.CharField()

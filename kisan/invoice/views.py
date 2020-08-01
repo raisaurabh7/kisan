@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .serializers import SugestionsSerializer
+from .serializers import OrdersSerializer
 from .models import Sellers, Buyers, Orders, OrderItems, Items
 from django.templatetags.static import static
 from django.http import HttpResponse
@@ -8,8 +8,12 @@ from django.views.generic import View
 from .utils import render_to_pdf
 
 
+def generateOrderTemplate(request):
+    return render(request, 'order.html', {})
+
+
 class GetOrder(generics.ListAPIView):
-    serializer_class = SugestionsSerializer
+    serializer_class = OrdersSerializer
 
     def get_queryset(self):
         orders = Orders.objects.values('id', 'orderSeller__name', 'orderSeller__address', 'orderBuyer__name',
@@ -22,30 +26,12 @@ class GetOrder(generics.ListAPIView):
             total = 0
             for item in ItemsList:
                 item["amount"] = ((item["orderItemsSeller__price"] * item["quantity"]) + (
-                            item["orderItemsSeller__price"] * item["quantity"]) * (item["orderItemsSeller__tex"] / 100))
+                        item["orderItemsSeller__price"] * item["quantity"]) * (item["orderItemsSeller__tex"] / 100))
                 total = total + (item["orderItemsSeller__price"] * item["quantity"]) + (
-                            item["orderItemsSeller__price"] * item["quantity"]) * (item["orderItemsSeller__tex"] / 100)
+                        item["orderItemsSeller__price"] * item["quantity"]) * (item["orderItemsSeller__tex"] / 100)
             order["items"] = ItemsList
             order["total"] = total
         return orders
-
-
-def generateInvoice(request):
-    order = list(Orders.objects.values_list('id', 'orderSeller__name', 'orderSeller__address', 'orderBuyer__name',
-                                            'orderBuyer__address', 'created_at', "orderSeller__signature").filter(id=1))
-
-    ItemsList = OrderItems.objects.values_list('orderItemsSeller__name', 'orderItemsSeller__price',
-                                               'quantity', 'orderItemsSeller__tex').filter(orderItemsSeller=order[0])
-    items = []
-    total = 0
-    for item in ItemsList:
-        tempList = list(item)
-        tempList.append((item[1] * item[2]) + (item[1] * item[2]) * (item[3] / 100))
-        total = total + (item[1] * item[2]) + (item[1] * item[2]) * (item[3] / 100)
-        items.append(tempList)
-    order.append(items)
-    order.append(total)
-    return render(request, 'invoice.html', {"inv": order})
 
 
 class GeneratePdf(View):
@@ -75,7 +61,7 @@ class GeneratePdf(View):
         order[0]["total"] = total
         data = order[0]
 
-        pdf = render_to_pdf('invoice2.html', data)
+        pdf = render_to_pdf('invoiceTemplate.html', data)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Invoice_%s.pdf" % (orderId)
