@@ -1,0 +1,169 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Invoice_{{id}}</title>
+        <style type="text/css">
+            body {
+                font-weight: 200;
+                font-size: 14px;
+            }
+            table{
+            width:100%;
+            }
+            .header {
+                font-size: 20px;
+                font-weight: 100;
+                text-align: center;
+                color: #007cae;
+            }
+            .title {
+                font-size: 22px;
+                font-weight: 100;
+               /* text-align: right;*/
+               padding: 10px 20px 0px 20px;
+            }
+            .title span {
+                color: #007cae;
+            }
+            .details {
+                padding: 10px 20px 0px 20px;
+                text-align: left !important;
+                /*margin-left: 40%;*/
+            }
+            .hrItem {
+                border: none;
+                height: 1px;
+                /* Set the hr color */
+                color: #ddd; /* old IE */
+                background-color: #ddd; /* Modern Browsers */
+            }
+                table > thead>tr>th {
+                    vertical-align: bottom;
+                    border-bottom: 2px solid #ddd;
+                }
+                .totalTr > td{    border-top: 1px solid #ddd; font-weight:bold}
+            .table>tbody>tr>td{
+            border-right: 1px solid #ddd;
+            }
+            .table>tbody>tr>td:last-child{
+                border-right: 0;
+             }
+             .invoiceNo{
+             font-size10px;
+
+             }
+             .pullRight{
+             text-align:right;
+             }
+             .blue{color:blue;}
+             .small{
+             font-size:12px;
+             }
+
+        </style>
+    </head>
+    <body>
+
+        <div class='details'>
+            <table>
+                <tr>
+                    <td>
+                        <img width="150px" style="float:left" src="{{logo}}">
+                    </td>
+                    <td class="pullRight">
+                        <p class='invoiceNo' style="float:right">Order No. <span class="blue">{{id}}</span><br>
+                        <span class="small">{{date}}<br>
+                            {{time}}</span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Bill from: {{orderSeller__name}}<br/>
+                        Address: {{orderSeller__address}} <br/>
+                    </td>
+                    <td class="pullRight">
+                        Bill To: {{orderBuyer__name}}<br/>
+                        Address: {{orderBuyer__address}} <br/>
+                    </td>
+                </tr>
+            </table>
+            <hr class='hrItem' />
+
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th style= "width: 10%;">
+                        S.No
+                    </th>
+                    <th style= "width: 30%; text-align:left;">
+                        Name
+                    </th>
+                    <th style= "width: 15%; ">
+                        Price(Rs)
+                    </th>
+                    <th style= "width: 10%;">
+                        Qty
+                    </th>
+                    <th style= "width: 15%;">
+                        Tax(%)
+                    </th>
+                    <th style= "width: 20%;">
+                        Amount(Rs)
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="itemTbody">
+                    {% for item in itemList %}
+                        <tr>
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+                    <td>
+                        {{item.0}}
+                    </td>
+                    <td>
+                        {{item.1}}
+                    </td>
+                    <td>
+                        {{item.2}}
+                    </td>
+                    <td>
+                        {{item.3}}
+                    </td>
+                    <td>
+                        {{item.4}}
+                    </td>
+                </tr>
+                    {% endfor %}
+
+                </tbody>
+                <tFoot>
+                    <tr class="totalTr">
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        Total:
+                    </td>
+                    <td>
+                        Rs {{ total }}
+                    </td>
+                </tr>
+                </tFoot>
+            </table>
+            <div style="text-align:right;">
+                <img width="200px"   src="{{orderSeller__signature}}" >
+
+            </div>
+
+        </div>
+    </div>
+    </body>
+</html>
